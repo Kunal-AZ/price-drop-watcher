@@ -8,7 +8,7 @@ import {
 
 const ContactPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-50 px-8 py-20">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-50 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 
       {/* Hero */}
       <div className="text-center mb-20">
@@ -16,22 +16,22 @@ const ContactPage = () => {
           Contact Support
         </p>
 
-        <h1 className="text-6xl font-bold text-black mb-6">
+        <h1 className="mb-6 text-4xl font-bold text-black sm:text-5xl lg:text-6xl">
           Let’s Talk
         </h1>
 
-        <p className="text-gray-600 text-xl max-w-3xl mx-auto leading-8">
+        <p className="mx-auto max-w-3xl text-lg leading-8 text-gray-600 sm:text-xl">
           Reach out for product support, partnerships, or feature suggestions.
         </p>
       </div>
 
       {/* Main Card */}
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl border border-yellow-100 overflow-hidden">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-yellow-100 bg-white shadow-2xl">
 
         <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
 
           {/* Left Side */}
-          <div className="bg-yellow-100 p-10 relative overflow-hidden">
+          <div className="relative overflow-hidden bg-yellow-100 p-8 sm:p-10">
 
             <div className="absolute right-4 top-6 opacity-10">
               <ArrowRight className="w-28 h-28 text-black" />
@@ -69,7 +69,7 @@ const ContactPage = () => {
           </div>
 
           {/* Right Side */}
-          <div className="p-12">
+          <div className="p-6 sm:p-8 lg:p-12">
 
             <div className="space-y-6">
 
@@ -91,7 +91,7 @@ const ContactPage = () => {
                 className="w-full px-6 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-yellow-400"
               />
 
-              <button className="bg-black text-white px-10 py-4 rounded-xl text-lg font-medium flex items-center gap-2 hover:bg-gray-900 transition-all">
+              <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-black px-8 py-4 text-base font-medium text-white transition-all hover:bg-gray-900 sm:w-auto sm:px-10 sm:text-lg">
                 Send Message <ArrowRight className="h-5 w-5" />
               </button>
 

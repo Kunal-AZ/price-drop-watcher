@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="error-screen">
-          <h1>Something went wrong 🚨</h1>
+          <h1>Something went wrong</h1>
           <p>Please refresh the page</p>
         </div>
       );

@@ -47,7 +47,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FCFBF7] px-6 text-slate-800 selection:bg-yellow-200">
+    <div className="flex min-h-screen items-center justify-center bg-[#FCFBF7] px-4 py-8 text-slate-800 selection:bg-yellow-200 sm:px-6">
       
       {/* Dynamic Background Accents */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -66,10 +66,10 @@ const LoginPage = () => {
           <h1 className="text-3xl font-extrabold tracking-tight text-black">BargainIt</h1>
         </div>
 
-        <div className="bg-white border border-yellow-100/50 rounded-[2.5rem] p-10 shadow-[0_25px_60px_-15px_rgba(234,179,8,0.12)]">
+        <div className="rounded-[2rem] border border-yellow-100/50 bg-white p-6 shadow-[0_25px_60px_-15px_rgba(234,179,8,0.12)] sm:rounded-[2.5rem] sm:p-10">
           
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-slate-900">Welcome Back</h2>
+            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Welcome Back</h2>
             <p className="text-slate-500 mt-2 font-medium">Continue your smart shopping journey.</p>
           </div>
 

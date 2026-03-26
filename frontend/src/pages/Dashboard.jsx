@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { productService } from '../services/productService';
 import { Button } from '../components/ui/button';
@@ -24,12 +24,14 @@ import { motion as Motion } from 'framer-motion';
 const DashboardPage = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [prefillProduct, setPrefillProduct] = useState(null);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -47,6 +49,22 @@ const DashboardPage = () => {
     fetchProducts();
   }, [fetchProducts]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldOpenAddModal = params.get('add') === '1';
+    const productUrl = params.get('url') || '';
+
+    if (shouldOpenAddModal) {
+      setPrefillProduct({
+        product_name: '',
+        product_url: productUrl,
+        current_price: '',
+        target_price: '',
+      });
+      setShowAddModal(true);
+    }
+  }, [location.search]);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -55,6 +73,7 @@ const DashboardPage = () => {
   const handleProductAdded = (newProduct) => {
     setProducts((prev) => [newProduct, ...prev]);
     setShowAddModal(false);
+    setPrefillProduct(null);
   };
 
   const handleProductDeleted = (productId) => {
@@ -76,8 +95,23 @@ const DashboardPage = () => {
     setShowEditModal(false);
   };
 
+  const clearDashboardQueryState = useCallback(() => {
+    if (!location.search) return;
+    navigate('/dashboard', { replace: true });
+  }, [location.search, navigate]);
+
+  const searchQuery = new URLSearchParams(location.search).get('q')?.trim() || '';
+  const normalizedSearchQuery = searchQuery.toLowerCase();
+  const filteredProducts = normalizedSearchQuery
+    ? products.filter((product) => {
+        const name = product.product_name?.toLowerCase() || '';
+        const url = product.product_url?.toLowerCase() || '';
+        return name.includes(normalizedSearchQuery) || url.includes(normalizedSearchQuery);
+      })
+    : products;
+
   const totalProducts = products.length;
-  const alerts = products.filter(
+  const alerts = filteredProducts.filter(
     (p) =>
       p?.current_price != null &&
       p?.target_price != null &&
@@ -85,17 +119,17 @@ const DashboardPage = () => {
   ).length;
 
   const averageTargetGap =
-    products.length > 0
+    filteredProducts.length > 0
       ? Math.round(
-          products.reduce((total, product) => {
+          filteredProducts.reduce((total, product) => {
             const currentPrice = Number(product.current_price) || 0;
             const targetPrice = Number(product.target_price) || 0;
             return total + Math.max(currentPrice - targetPrice, 0);
-          }, 0) / products.length
+          }, 0) / filteredProducts.length
         )
       : 0;
 
-  const nearestDeal = [...products]
+  const nearestDeal = [...filteredProducts]
     .filter(
       (product) =>
         product?.current_price != null && product?.target_price != null
@@ -168,7 +202,7 @@ const DashboardPage = () => {
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:min-w-[360px]">
+              <div className="grid gap-4 sm:grid-cols-2 lg:min-w-[320px] xl:min-w-[360px]">
                 <div className="rounded-2xl border border-yellow-200 bg-white/80 p-5 backdrop-blur">
                   <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
                     <ShieldCheck className="h-4 w-4 text-emerald-600" />
@@ -189,7 +223,10 @@ const DashboardPage = () => {
                 </div>
 
                 <Button
-                  onClick={() => setShowAddModal(true)}
+                  onClick={() => {
+                    setPrefillProduct(null);
+                    setShowAddModal(true);
+                  }}
                   className="min-h-[120px] rounded-2xl bg-black px-8 py-6 text-left text-white shadow-[0_20px_50px_-25px_rgba(0,0,0,0.45)] transition hover:bg-slate-900"
                 >
                   <div>
@@ -252,11 +289,26 @@ const DashboardPage = () => {
               </div>
             </div>
 
+            {searchQuery ? (
+              <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-yellow-200 bg-yellow-50/70 px-4 py-4 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+                <p>
+                  Showing results for <span className="font-semibold">"{searchQuery}"</span>.
+                </p>
+                <button
+                  type="button"
+                  onClick={clearDashboardQueryState}
+                  className="w-full rounded-xl border border-yellow-300 px-4 py-2 font-medium text-slate-700 sm:w-auto"
+                >
+                  Clear filter
+                </button>
+              </div>
+            ) : null}
+
             {loading ? (
               <div className="flex justify-center py-20">
                 <div className="h-12 w-12 animate-spin rounded-full border-4 border-amber-400 border-t-transparent" />
               </div>
-            ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
               <Motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -266,22 +318,32 @@ const DashboardPage = () => {
                   <TrendingDown className="text-yellow-600" size={38} />
                 </div>
                 <h3 className="mt-6 text-3xl font-black text-slate-950">
-                  Your watchlist is empty
+                  {products.length === 0 ? 'Your watchlist is empty' : 'No matching products'}
                 </h3>
                 <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
-                  Add your first product to start tracking price movement, comparing current prices against your targets, and spotting deal opportunities sooner.
+                  {products.length === 0
+                    ? 'Add your first product to start tracking price movement, comparing current prices against your targets, and spotting deal opportunities sooner.'
+                    : 'Try a different search term or clear the filter to view your full watchlist again.'}
                 </p>
                 <Button
-                  onClick={() => setShowAddModal(true)}
+                  onClick={() => {
+                    if (products.length === 0) {
+                      setPrefillProduct(null);
+                      setShowAddModal(true);
+                      return;
+                    }
+
+                    clearDashboardQueryState();
+                  }}
                   className="mt-8 rounded-2xl bg-black px-6 py-4 text-white hover:bg-slate-900"
                 >
                   <Plus className="mr-2 h-5 w-5" />
-                  Add Product
+                  {products.length === 0 ? 'Add Product' : 'Clear Filter'}
                 </Button>
               </Motion.div>
             ) : (
               <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <ProductCard
                     key={product.product_id}
                     product={product}
@@ -296,7 +358,12 @@ const DashboardPage = () => {
 
         <AddProductModal
           open={showAddModal}
-          onClose={() => setShowAddModal(false)}
+          initialData={prefillProduct}
+          onClose={() => {
+            setShowAddModal(false);
+            setPrefillProduct(null);
+            clearDashboardQueryState();
+          }}
           onProductAdded={handleProductAdded}
         />
         <EditProductModal

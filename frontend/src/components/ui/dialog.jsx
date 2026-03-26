@@ -1,16 +1,43 @@
-export function Dialog({ children, open }) {
+import { useEffect } from "react";
+
+export function Dialog({ children, open, onOpenChange }) {
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onOpenChange?.(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [onOpenChange, open]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      {children}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6"
+      onClick={() => onOpenChange?.(false)}
+    >
+      <div className="w-full" onClick={(event) => event.stopPropagation()}>
+        {children}
+      </div>
     </div>
   );
 }
 
 export function DialogContent({ children, className = "" }) {
   return (
-    <div className={`bg-slate-900 p-6 rounded-xl w-full max-w-md ${className}`}>
+    <div
+      className={`mx-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-xl bg-slate-900 p-4 sm:p-6 ${className}`}
+    >
       {children}
     </div>
   );

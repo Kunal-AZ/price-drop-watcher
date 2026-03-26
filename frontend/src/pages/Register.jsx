@@ -95,7 +95,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FCFBF7] px-6 text-slate-800">
+    <div className="flex min-h-screen items-center justify-center bg-[#FCFBF7] px-4 py-8 text-slate-800 sm:px-6">
 
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -104,7 +104,7 @@ const RegisterPage = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
-        <div className="bg-white border border-yellow-100 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(234,179,8,0.1)]">
+        <div className="rounded-[2rem] border border-yellow-100 bg-white p-6 shadow-[0_20px_50px_rgba(234,179,8,0.1)] sm:p-8 md:rounded-[2.5rem] md:p-12">
 
           {/* Header */}
           <div className="text-center mb-10">
@@ -112,7 +112,7 @@ const RegisterPage = () => {
               <img src={logo} alt="logo" className="h-12 w-auto object-contain" />
             </div>
             <span className="text-2xl font-bold text-black">BargainIt</span>
-            <h1 className="text-3xl font-bold mt-4">Create your account</h1>
+            <h1 className="mt-4 text-2xl font-bold sm:text-3xl">Create your account</h1>
             <p className="text-slate-500 mt-2">Smart shopping starts with a click</p>
           </div>
 

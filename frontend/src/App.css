@@ -4,6 +4,7 @@ body {
   font-family: 'Inter', sans-serif;
   background: radial-gradient(circle at top, #0f172a, #020617);
   color: #f1f5f9;
+  overflow-x: hidden;
 }
 
 /* 🔥 Loader */
@@ -27,4 +28,16 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+.error-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #fffdf7 0%, #fef3c7 100%);
+  color: #0f172a;
+  text-align: center;
 }

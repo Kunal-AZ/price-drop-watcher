@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { productService } from "../services/productService";
 import {
   Dialog,
@@ -12,15 +12,29 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
 
-const AddProductModal = ({ open, onClose, onProductAdded }) => {
+const defaultFormData = {
+  product_name: "",
+  product_url: "",
+  current_price: "",
+  target_price: "",
+};
+
+const AddProductModal = ({ open, onClose, onProductAdded, initialData }) => {
   const [formData, setFormData] = useState({
-    product_name: "",
-    product_url: "",
-    current_price: "",
-    target_price: "",
+    ...defaultFormData,
+    ...initialData,
   });
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    setFormData({
+      ...defaultFormData,
+      ...initialData,
+    });
+  }, [initialData, open]);
 
   // 🔥 Validation
   const validate = () => {
@@ -62,12 +76,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
       toast.success("Product added successfully");
 
       // Reset form
-      setFormData({
-        product_name: "",
-        product_url: "",
-        current_price: "",
-        target_price: "",
-      });
+      setFormData(defaultFormData);
 
       onClose();
     } catch (err) {
@@ -79,7 +88,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white border border-yellow-200 rounded-2xl shadow-xl">
+      <DialogContent className="rounded-2xl border border-yellow-200 bg-white shadow-xl">
 
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
@@ -90,7 +99,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
 
           {/* Product Name */}
           <div>
@@ -117,7 +126,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
           </div>
 
           {/* Prices */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <Label>Current Price</Label>
               <Input
@@ -150,7 +159,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button
               type="button"
               onClick={onClose}
@@ -163,7 +172,7 @@ const AddProductModal = ({ open, onClose, onProductAdded }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-yellow-400 hover:bg-yellow-500 text-black w-full"
+              className="w-full bg-yellow-400 text-black hover:bg-yellow-500"
             >
               {loading ? "Adding..." : "Add Product"}
             </Button>

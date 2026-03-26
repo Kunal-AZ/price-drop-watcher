@@ -6,24 +6,24 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-yellow-50 text-black">
 
-      <section className="max-w-7xl mx-auto px-8 py-24">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
 
         <div className="text-center mb-20">
           <div className="flex justify-center items-center gap-3 mb-6">
             <img src={logo} alt="logo" className="h-14 w-14 object-contain" />
-            <h1 className="text-4xl font-bold">About BargainIt</h1>
+            <h1 className="text-3xl font-bold sm:text-4xl">About BargainIt</h1>
           </div>
 
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="mx-auto max-w-3xl text-lg leading-relaxed text-gray-600 sm:text-xl">
             BargainIt helps users track product prices across multiple online stores
             and receive instant alerts when prices drop below target values.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-20 items-center mb-24">
+        <div className="mb-20 grid items-center gap-10 lg:mb-24 lg:grid-cols-2 lg:gap-20">
 
           <div>
-            <h2 className="text-5xl font-bold mb-8 leading-tight">
+            <h2 className="mb-8 text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
               Smart shopping built for modern buyers.
             </h2>
 
@@ -58,7 +58,7 @@ const AboutPage = () => {
 
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4 lg:gap-8">
 
           {[
             [TrendingDown, 'Track Products'],

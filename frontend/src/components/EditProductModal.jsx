@@ -77,7 +77,7 @@ const EditProductModal = ({ open, onClose, product, onProductUpdated }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white border border-yellow-200 rounded-2xl shadow-xl">
+      <DialogContent className="rounded-2xl border border-yellow-200 bg-white shadow-xl">
 
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
@@ -85,7 +85,7 @@ const EditProductModal = ({ open, onClose, product, onProductUpdated }) => {
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
 
           {/* Name */}
           <div>
@@ -102,7 +102,7 @@ const EditProductModal = ({ open, onClose, product, onProductUpdated }) => {
           </div>
 
           {/* Prices */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <Label>Current Price</Label>
               <Input
@@ -133,7 +133,7 @@ const EditProductModal = ({ open, onClose, product, onProductUpdated }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button
               type="button"
               onClick={onClose}
@@ -146,7 +146,7 @@ const EditProductModal = ({ open, onClose, product, onProductUpdated }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-yellow-400 hover:bg-yellow-500 text-black w-full"
+              className="w-full bg-yellow-400 text-black hover:bg-yellow-500"
             >
               {loading ? "Updating..." : "Update Product"}
             </Button>

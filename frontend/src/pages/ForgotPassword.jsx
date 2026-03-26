@@ -20,7 +20,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FCFBF7] px-6 text-slate-800">
+    <div className="flex min-h-screen items-center justify-center bg-[#FCFBF7] px-4 py-8 text-slate-800 sm:px-6">
       
       {/* Background Accents */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -29,14 +29,14 @@ const ForgotPasswordPage = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <div className="bg-white border border-yellow-100/50 rounded-[2.5rem] p-10 shadow-[0_25px_60px_-15px_rgba(234,179,8,0.12)]">
+        <div className="rounded-[2rem] border border-yellow-100/50 bg-white p-6 shadow-[0_25px_60px_-15px_rgba(234,179,8,0.12)] sm:rounded-[2.5rem] sm:p-10">
           
           {/* Logo Section */}
           <div className="flex flex-col items-center text-center mb-8">
             <div className="mb-4">
               <img src={logo} alt="logo" className="h-12 w-auto object-contain mix-blend-multiply" />
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-black mb-1">BargainIt</h1>
+            <h1 className="mb-1 text-3xl font-black tracking-tight text-black sm:text-4xl">BargainIt</h1>
           </div>
 
           {!submitted ? (
