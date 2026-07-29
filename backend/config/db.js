@@ -8,13 +8,18 @@ const connectDB = async () => {
   }
 
   if (!connectionPromise) {
-    connectionPromise = mongoose.connect(process.env.MONGO_URI).catch((error) => {
+    connectionPromise = mongoose.connect(process.env.MONGO_URI, {
+      dbName: process.env.MONGO_DB_NAME || 'dropify',
+    }).catch((error) => {
       connectionPromise = null;
       throw error;
     });
   }
 
-  await connectionPromise;
+  const connection = await connectionPromise;
+  console.log(
+    `MongoDB connected: ${connection.connection.host}/${connection.connection.name}`
+  );
   return mongoose.connection;
 };
 

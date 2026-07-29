@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 
-import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import dealsRoutes from './routes/dealsRoutes.js';
@@ -15,15 +14,6 @@ app.use('/api/deals', dealsRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
-});
-
-app.use(async (_req, _res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    next(error);
-  }
 });
 
 app.use('/api/auth', authRoutes);

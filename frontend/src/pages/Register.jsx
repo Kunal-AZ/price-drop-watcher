@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
-import { Eye, EyeOff, CheckCircle, XCircle, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, XCircle, Mail, Lock, User, ArrowRight, Home } from 'lucide-react';
 import logo from "../assets/logo.jpg"; // ✅ FIXED
 
 const RegisterPage = () => {
@@ -77,7 +77,7 @@ const RegisterPage = () => {
     try {
       setLoading(true);
       await register(form.name, form.email, form.password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setErrors({ general: err.message || 'Registration failed' });
     } finally {
@@ -96,6 +96,14 @@ const RegisterPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FCFBF7] px-4 py-8 text-slate-800 sm:px-6">
+      <button
+        type="button"
+        onClick={() => navigate('/')}
+        className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-yellow-50 sm:left-6 sm:top-6"
+      >
+        <Home size={16} />
+        Home
+      </button>
 
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

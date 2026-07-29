@@ -49,6 +49,17 @@ export const productService = {
     }
   },
 
+  refresh: async (id) => {
+    try {
+      const res = await api.put(`/products/refresh/${id}`);
+      return res.data;
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || "Failed to refresh product price"
+      );
+    }
+  },
+
   // 🔥 Delete product
   delete: async (id) => {
     try {

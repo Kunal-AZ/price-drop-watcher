@@ -10,6 +10,7 @@ import {
 import { Toaster } from "sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/useAuth";
 
 const LandingPage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -25,12 +26,24 @@ const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const HelpPage = lazy(() => import("./pages/HelpPage"));
 
 const Loader = () => (
-  <div className="flex h-screen items-center justify-center bg-slate-950 text-white">
-    <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-blue-500" />
+  <div className="flex h-screen items-center justify-center bg-[linear-gradient(180deg,#f8fafc_0%,#ecfdf5_55%,#fff7ed_100%)] text-slate-700">
+    <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
   </div>
 );
 
-const PublicRoute = ({ children }) => children;
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

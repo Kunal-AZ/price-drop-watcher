@@ -143,21 +143,50 @@ const dedupeProducts = (products) => {
   });
 };
 
+const extractProductTitle = ($) => {
+  return (
+    $('#productTitle').first().text().trim() ||
+    $('span.VU-ZEz').first().text().trim() ||
+    $('span.B_NuCI').first().text().trim() ||
+    $('meta[property="og:title"]').attr('content')?.trim() ||
+    $('title').first().text().trim() ||
+    ''
+  );
+};
+
+const extractProductPrice = ($) => {
+  return normalizePrice(
+    $('#priceblock_ourprice').first().text() ||
+      $('#priceblock_dealprice').first().text() ||
+      $('#priceblock_saleprice').first().text() ||
+      $('.a-price .a-offscreen').first().text() ||
+      $('.a-price-whole').first().text() ||
+      $('div.Nx9bqj').first().text() ||
+      $('._30jeq3').first().text()
+  );
+};
+
+export const scrapeProductDetails = async (url) => {
+  try {
+    const html = await fetchHtml(url);
+    const $ = cheerio.load(html);
+
+    return {
+      title: extractProductTitle($),
+      current_price: extractProductPrice($),
+    };
+  } catch {
+    return {
+      title: '',
+      current_price: null,
+    };
+  }
+};
+
 export const scrapePrice = async (url) => {
   try {
-    const { data } = await axios.get(url, {
-      headers: REQUEST_HEADERS,
-    });
-
-    const $ = cheerio.load(data);
-
-    let price =
-      $('.a-price-whole').first().text() ||   // Amazon
-      $('._30jeq3').first().text();           // Flipkart
-
-    price = price.replace(/[₹,]/g, '');
-
-    return parseFloat(price);
+    const { current_price: currentPrice } = await scrapeProductDetails(url);
+    return currentPrice;
   } catch {
     return null;
   }

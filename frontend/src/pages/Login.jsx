@@ -9,7 +9,8 @@ import {
   EyeOff, 
   ArrowRight, 
   Mail, 
-  Lock 
+  Lock,
+  Home
 } from 'lucide-react';
 
 const LoginPage = () => {
@@ -38,7 +39,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       await login(form.email, form.password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch {
       setErrors({ general: 'Invalid credentials' });
     } finally {
@@ -48,6 +49,14 @@ const LoginPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FCFBF7] px-4 py-8 text-slate-800 selection:bg-yellow-200 sm:px-6">
+      <button
+        type="button"
+        onClick={() => navigate('/')}
+        className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-yellow-50 sm:left-6 sm:top-6"
+      >
+        <Home size={16} />
+        Home
+      </button>
       
       {/* Dynamic Background Accents */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

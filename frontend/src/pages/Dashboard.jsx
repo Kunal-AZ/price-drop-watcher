@@ -58,7 +58,6 @@ const DashboardPage = () => {
       setPrefillProduct({
         product_name: '',
         product_url: productUrl,
-        current_price: '',
         target_price: '',
       });
       setShowAddModal(true);
@@ -93,6 +92,14 @@ const DashboardPage = () => {
     );
     setEditingProduct(updatedProduct);
     setShowEditModal(false);
+  };
+
+  const handleProductRefreshed = (updatedProduct) => {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.product_id === updatedProduct.product_id ? updatedProduct : p
+      )
+    );
   };
 
   const clearDashboardQueryState = useCallback(() => {
@@ -146,39 +153,33 @@ const DashboardPage = () => {
       label: 'Products tracked',
       value: totalProducts,
       note: totalProducts === 1 ? '1 active item' : `${totalProducts} active items`,
-      accent: 'from-amber-300/20 via-amber-200/5 to-transparent',
+      accent: 'from-amber-300/25 via-white to-transparent',
     },
     {
       icon: Bell,
       label: 'Alerts ready',
       value: alerts,
       note: alerts > 0 ? 'Targets reached' : 'Watching for drops',
-      accent: 'from-emerald-300/20 via-emerald-200/5 to-transparent',
+      accent: 'from-emerald-300/25 via-white to-transparent',
     },
     {
       icon: IndianRupee,
       label: 'Avg. gap',
       value: averageTargetGap > 0 ? `Rs. ${averageTargetGap}` : 'Rs. 0',
       note: 'Current vs target',
-      accent: 'from-sky-300/20 via-sky-200/5 to-transparent',
+      accent: 'from-sky-300/25 via-white to-transparent',
     },
     {
       icon: Activity,
       label: 'Tracking status',
       value: 'Live',
       note: 'Connected to backend',
-      accent: 'from-fuchsia-300/20 via-fuchsia-200/5 to-transparent',
+      accent: 'from-rose-300/25 via-white to-transparent',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fffdf7] via-[#fff9eb] to-[#fff4d8] text-slate-900">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-[-8%] top-[-8%] h-80 w-80 rounded-full bg-yellow-300/30 blur-3xl" />
-        <div className="absolute right-[-6%] top-20 h-72 w-72 rounded-full bg-orange-200/35 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-amber-200/35 blur-3xl" />
-      </div>
-
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#ecfdf5_52%,#fff7ed_100%)] text-slate-900">
       <div className="relative z-10">
         <Navbar user={user} onLogout={handleLogout} />
 
@@ -186,24 +187,24 @@ const DashboardPage = () => {
           <Motion.section
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            className="overflow-hidden rounded-[2rem] border border-yellow-200 bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.22),_transparent_28%),linear-gradient(145deg,rgba(255,255,255,0.96),rgba(255,248,220,0.96))] p-8 shadow-[0_35px_90px_-45px_rgba(180,120,0,0.35)] md:p-10"
+            className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-[0_35px_90px_-55px_rgba(15,23,42,0.45)] md:p-10"
           >
             <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-yellow-300 bg-yellow-100 px-4 py-2 text-sm font-semibold text-yellow-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
                   <Sparkles className="h-4 w-4" />
-                  Price intelligence workspace
+                  Automatic price tracking
                 </div>
                 <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
                   Welcome back{user?.name ? `, ${user.name}` : ''}.
                 </h1>
                 <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-                  Watch the products you care about, track how close they are to target, and move on the best deals faster.
+                  Paste a product link, set your target, and let BargainIt fetch the current price for you.
                 </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:min-w-[320px] xl:min-w-[360px]">
-                <div className="rounded-2xl border border-yellow-200 bg-white/80 p-5 backdrop-blur">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                   <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
                     <ShieldCheck className="h-4 w-4 text-emerald-600" />
                     Closest target
@@ -235,10 +236,10 @@ const DashboardPage = () => {
                       Add Product
                     </div>
                     <div className="mt-3 text-2xl font-black">
-                      Start a new watchlist item
+                      Track by link
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-sm font-medium text-white/70">
-                      Track a fresh price target <ArrowUpRight className="h-4 w-4" />
+                      Current price is fetched automatically <ArrowUpRight className="h-4 w-4" />
                     </div>
                   </div>
                 </Button>
@@ -251,16 +252,16 @@ const DashboardPage = () => {
               <Motion.div
                 key={item.label}
                 whileHover={{ y: -4 }}
-                className={`rounded-[1.75rem] border border-yellow-200 bg-gradient-to-br ${item.accent} p-[1px] shadow-[0_20px_50px_-35px_rgba(180,120,0,0.22)]`}
+                className={`rounded-2xl border border-slate-200 bg-gradient-to-br ${item.accent} p-[1px] shadow-[0_20px_50px_-40px_rgba(15,23,42,0.25)]`}
               >
-                <div className="h-full rounded-[1.7rem] bg-white/90 p-6 backdrop-blur-xl">
+                <div className="h-full rounded-2xl bg-white/90 p-6 backdrop-blur-xl">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-medium text-slate-500">{item.label}</p>
                       <h3 className="mt-3 text-3xl font-black text-slate-950">{item.value}</h3>
                     </div>
-                    <div className="rounded-2xl bg-yellow-50 p-3">
-                      <item.icon className="h-6 w-6 text-yellow-600" />
+                    <div className="rounded-2xl bg-slate-100 p-3">
+                      <item.icon className="h-6 w-6 text-slate-700" />
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-slate-500">{item.note}</p>
@@ -269,8 +270,8 @@ const DashboardPage = () => {
             ))}
           </section>
 
-          <section className="mt-8 rounded-[2rem] border border-yellow-200 bg-white/80 p-6 shadow-[0_20px_60px_-40px_rgba(180,120,0,0.28)] backdrop-blur-xl md:p-8">
-            <div className="flex flex-col gap-4 border-b border-yellow-100 pb-6 md:flex-row md:items-end md:justify-between">
+          <section className="mt-8 rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.3)] backdrop-blur-xl md:p-8">
+            <div className="flex flex-col gap-4 border-b border-slate-100 pb-6 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                   Watchlist
@@ -279,10 +280,10 @@ const DashboardPage = () => {
                   Your tracked products
                 </h2>
                 <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">
-                  Keep an eye on every monitored product, see how close each one is to your target, and adjust the list whenever priorities shift.
+                  Every card starts with a live fetched current price, then keeps tracking how close it is to your target.
                 </p>
               </div>
-              <div className="rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm font-medium text-slate-700">
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
                 {alerts > 0
                   ? `${alerts} alert${alerts === 1 ? '' : 's'} ready to act on`
                   : 'No targets hit yet'}
@@ -290,14 +291,14 @@ const DashboardPage = () => {
             </div>
 
             {searchQuery ? (
-              <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-yellow-200 bg-yellow-50/70 px-4 py-4 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between">
                 <p>
                   Showing results for <span className="font-semibold">"{searchQuery}"</span>.
                 </p>
                 <button
                   type="button"
                   onClick={clearDashboardQueryState}
-                  className="w-full rounded-xl border border-yellow-300 px-4 py-2 font-medium text-slate-700 sm:w-auto"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-700 sm:w-auto"
                 >
                   Clear filter
                 </button>
@@ -306,23 +307,23 @@ const DashboardPage = () => {
 
             {loading ? (
               <div className="flex justify-center py-20">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-amber-400 border-t-transparent" />
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
               </div>
             ) : filteredProducts.length === 0 ? (
               <Motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-8 rounded-[1.75rem] border border-dashed border-yellow-200 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,248,220,0.7))] px-6 py-20 text-center"
+                className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-20 text-center"
               >
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-yellow-100">
-                  <TrendingDown className="text-yellow-600" size={38} />
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-100">
+                  <TrendingDown className="text-emerald-600" size={38} />
                 </div>
                 <h3 className="mt-6 text-3xl font-black text-slate-950">
                   {products.length === 0 ? 'Your watchlist is empty' : 'No matching products'}
                 </h3>
                 <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
                   {products.length === 0
-                    ? 'Add your first product to start tracking price movement, comparing current prices against your targets, and spotting deal opportunities sooner.'
+                    ? 'Add your first product link, choose a target price, and BargainIt will fetch the current price before saving it to your watchlist.'
                     : 'Try a different search term or clear the filter to view your full watchlist again.'}
                 </p>
                 <Button
@@ -349,6 +350,7 @@ const DashboardPage = () => {
                     product={product}
                     onDelete={handleProductDeleted}
                     onUpdate={handleEditProduct}
+                    onRefresh={handleProductRefreshed}
                   />
                 ))}
               </div>

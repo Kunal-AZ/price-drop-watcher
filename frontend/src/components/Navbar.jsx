@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, User, LogOut, Bell, Menu, X } from "lucide-react";
+import { Search, User, LogOut, Bell, Menu, X, Home } from "lucide-react";
 import { useAuth } from "../context/useAuth";
 import logo from "../assets/logo.jpg";
 
@@ -117,6 +117,13 @@ const Navbar = ({ user: propUser, onLogout }) => {
           </form>
 
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center justify-center gap-2 rounded-xl border border-yellow-200 bg-white px-4 py-2 text-slate-700 hover:bg-yellow-50"
+            >
+              <Home size={16} /> Home
+            </button>
+
             {user ? (
               <>
                 <div className="hidden items-center gap-2 text-slate-700 sm:flex">

@@ -9,14 +9,19 @@ import {
   Flame,
   ExternalLink,
   Store,
+  Home,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import logo from '../assets/logo.jpg';
 import image1 from '../assets/image1.png';
 import { homeService } from '../services/homeService';
+import { useAuth } from '../context/useAuth';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, loading: authLoading, logout } = useAuth();
   const [popularProducts, setPopularProducts] = useState([]);
   const [topPriceDrops, setTopPriceDrops] = useState([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
@@ -63,14 +68,23 @@ const LandingPage = () => {
     );
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-yellow-50 text-black">
       <nav className="sticky top-0 z-50 border-b border-yellow-100 bg-white px-4 py-4 shadow-sm sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 py-1 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-fit items-center gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="flex min-w-fit items-center gap-3 text-left"
+          >
             <img src={logo} alt="logo" className="h-12 w-12 object-contain" />
             <h1 className="text-2xl font-bold">BargainIt</h1>
-          </div>
+          </button>
 
           <div className="flex w-full flex-col gap-4 lg:flex-1 lg:flex-row lg:items-center lg:justify-end">
             <form onSubmit={handleQuickSearch} className="relative w-full lg:max-w-xl">
@@ -84,6 +98,14 @@ const LandingPage = () => {
             </form>
 
             <div className="flex flex-wrap gap-4 text-sm font-medium text-gray-700 sm:gap-6">
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="inline-flex items-center gap-1 hover:text-yellow-500"
+              >
+                <Home className="h-4 w-4" />
+                Home
+              </button>
               <a href="#popular-products" className="hover:text-yellow-500">
                 Popular Products
               </a>
@@ -97,19 +119,49 @@ const LandingPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3 sm:gap-4">
-            <Button
-              onClick={() => navigate('/register')}
-              className="rounded-full bg-black px-6 text-white hover:bg-gray-900 sm:px-8"
-            >
-              Sign Up
-            </Button>
+            {authLoading ? (
+              <div className="h-10 w-40 animate-pulse rounded-full bg-yellow-100" />
+            ) : isAuthenticated ? (
+              <>
+                <div className="flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-semibold text-slate-700">
+                  <User className="h-4 w-4" />
+                  <span className="max-w-[140px] truncate">
+                    {user?.name || user?.email || 'User'}
+                  </span>
+                </div>
 
-            <Button
-              onClick={() => navigate('/login')}
-              className="rounded-full border border-yellow-300 bg-white px-6 text-black hover:bg-yellow-50 sm:px-8"
-            >
-              Sign In
-            </Button>
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  className="rounded-full bg-black px-6 text-white hover:bg-gray-900 sm:px-8"
+                >
+                  Dashboard
+                </Button>
+
+                <Button
+                  onClick={handleLogout}
+                  className="rounded-full border border-yellow-300 bg-white px-6 text-black hover:bg-yellow-50 sm:px-8"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => navigate('/register')}
+                  className="rounded-full bg-black px-6 text-white hover:bg-gray-900 sm:px-8"
+                >
+                  Sign Up
+                </Button>
+
+                <Button
+                  onClick={() => navigate('/login')}
+                  className="rounded-full border border-yellow-300 bg-white px-6 text-black hover:bg-yellow-50 sm:px-8"
+                >
+                  Sign In
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -131,14 +183,14 @@ const LandingPage = () => {
 
           <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:gap-5">
             <Button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate(isAuthenticated ? '/dashboard' : '/register')}
               className="rounded-xl bg-yellow-400 px-8 py-4 text-base text-black shadow-md hover:bg-yellow-500 sm:px-10 sm:text-lg"
             >
-              Start Tracking
+              {isAuthenticated ? 'Go to Dashboard' : 'Start Tracking'}
             </Button>
 
             <Button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/dashboard')}
               className="rounded-xl border border-yellow-300 bg-white px-8 py-4 text-base text-black hover:bg-yellow-50 sm:px-10 sm:text-lg"
             >
               Dashboard <ArrowRight className="ml-2 h-5 w-5" />
@@ -156,6 +208,34 @@ const LandingPage = () => {
               Instant alerts
             </div>
           </div>
+
+          {isAuthenticated && user ? (
+            <div className="mt-8 max-w-xl rounded-2xl border border-yellow-200 bg-white p-5 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-yellow-100 text-yellow-700">
+                  <User className="h-6 w-6" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-yellow-700">
+                    Signed in as
+                  </p>
+                  <h2 className="mt-1 truncate text-2xl font-bold text-slate-900">
+                    {user.name || 'BargainIt user'}
+                  </h2>
+                  {user.email ? (
+                    <p className="mt-1 truncate text-sm font-medium text-slate-600">
+                      {user.email}
+                    </p>
+                  ) : null}
+                  {user._id ? (
+                    <p className="mt-3 text-xs font-medium text-slate-400">
+                      User ID: {user._id}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <div className="relative">
